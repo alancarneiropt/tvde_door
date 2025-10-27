@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Monitor de Sistema - TVDE Door</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: #1a1a1a;
+            padding: 10px 20px;
+            border-bottom: 2px solid #00ff00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #00ff00;
+            font-size: 18px;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-item {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .status-ok { background: #004400; color: #00ff00; }
+        .status-error { background: #440000; color: #ff0000; }
+        .status-warning { background: #444400; color: #ffff00; }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 60px);
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .panel {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: #222;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            font-weight: bold;
+            color: #00ff00;
+        }
+
+        .panel-content {
+            height: calc(100% - 40px);
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 5px;
+            border-radius: 2px;
+        }
+
+        .log-info { color: #00ff00; }
+        .log-warning { color: #ffff00; background: #333300; }
+        .log-error { color: #ff0000; background: #330000; }
+        .log-debug { color: #00ffff; }
+
+        .timestamp {
+            color: #666;
+            font-size: 10px;
+        }
+
+        .system-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #333;
+        }
+
+        .info-title {
+            color: #00ff00;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #fff;
+            font-size: 11px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: 1px solid #00ff00;
+            background: transparent;
+            color: #00ff00;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 11px;
+        }
+
+        .btn:hover {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .btn-danger {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .btn-danger:hover {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            background: #1a1a1a;
+            padding: 10px;
+            text-align: center;
+            border-radius: 3px;
+            border: 1px solid #333;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff00;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 MONITOR DE SISTEMA - TVDE DOOR</h1>
+        <div class="status-bar">
+            <div class="status-item" id="system-status">INICIANDO...</div>
+            <div class="status-item" id="connection-status">CONECTANDO...</div>
+            <div class="status-item" id="error-count">ERROS: 0</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Painel de Logs -->
+        <div class="panel">
+            <div class="panel-header">📋 LOGS DO SISTEMA</div>
+            <div class="panel-content" id="logs-panel">
+                <div class="log-entry log-info">
+                    <span class="timestamp">[00:00:00]</span> Sistema iniciado...
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel de Status -->
+        <div class="panel">
+            <div class="panel-header">📊 STATUS DO SISTEMA</div>
+            <div class="panel-content">
+                <div class="system-info">
+                    <div class="info-box">
+                        <div class="info-title">🌐 URL Atual</div>
+                        <div class="info-value" id="current-url">Carregando...</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-title">🕒 Última Atualização</div>
+                        <div class="info-value" id="last-update">--:--:--</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-title">🔧 User Agent</div>
+                        <div class="info-value" id="user-agent">Carregando...</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-title">📱 Resolução</div>
+                        <div class="info-value" id="screen-resolution">Carregando...</div>
+                    </div>
+                </div>
+
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="images-loaded">0</div>
+                        <div class="metric-label">Imagens Carregadas</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="errors-count">0</div>
+                        <div class="metric-label">Erros</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="warnings-count">0</div>
+                        <div class="metric-label">Avisos</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="uptime">0s</div>
+                        <div class="metric-label">Tempo Ativo</div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" onclick="clearLogs()">🧹 Limpar Logs</button>
+                    <button class="btn" onclick="testSystem()">🧪 Testar Sistema</button>
+                    <button class="btn" onclick="exportLogs()">📤 Exportar Logs</button>
+                    <button class="btn btn-danger" onclick="resetSystem()">🔄 Reset Sistema</button>
+                </div>
+
+                <div class="info-box full-width">
+                    <div class="info-title">🔍 TESTE DE COMPONENTES</div>
+                    <div class="info-value" id="component-tests">
+                        <div id="test-images">🖼️ Imagens: <span class="status-item status-warning">Testando...</span></div>
+                        <div id="test-js">⚙️ JavaScript: <span class="status-item status-warning">Testando...</span></div>
+                        <div id="test-sw">🔧 Service Worker: <span class="status-item status-warning">Testando...</span></div>
+                        <div id="test-pwa">📱 PWA: <span class="status-item status-warning">Testando...</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SystemMonitor {
+            constructor() {
+                this.logs = [];
+                this.errors = 0;
+                this.warnings = 0;
+                this.startTime = Date.now();
+                this.imagesLoaded = 0;
+                this.totalImages = 3;
+                
+                this.init();
+            }
+
+            init() {
+                this.log('Sistema de monitoramento iniciado', 'info');
+                this.updateSystemInfo();
+                this.startMonitoring();
+                this.testComponents();
+                
+                // Interceptar console.log, console.error, console.warn
+                this.interceptConsole();
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = {
+                    timestamp,
+                    message,
+                    type,
+                    id: Date.now()
+                };
+                
+                this.logs.push(logEntry);
+                this.displayLog(logEntry);
+                this.updateCounters();
+            }
+
+            displayLog(logEntry) {
+                const logsPanel = document.getElementById('logs-panel');
+                const logDiv = document.createElement('div');
+                logDiv.className = `log-entry log-${logEntry.type}`;
+                logDiv.innerHTML = `
+                    <span class="timestamp">[${logEntry.timestamp}]</span> ${logEntry.message}
+                `;
+                
+                logsPanel.appendChild(logDiv);
+                logsPanel.scrollTop = logsPanel.scrollHeight;
+                
+                // Manter apenas os últimos 100 logs
+                if (this.logs.length > 100) {
+                    this.logs.shift();
+                    logsPanel.removeChild(logsPanel.firstChild);
+                }
+            }
+
+            updateSystemInfo() {
+                document.getElementById('current-url').textContent = window.location.href;
+                document.getElementById('user-agent').textContent = navigator.userAgent.substring(0, 50) + '...';
+                document.getElementById('screen-resolution').textContent = `${screen.width}x${screen.height}`;
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+            }
+
+            startMonitoring() {
+                // Atualizar informações a cada 5 segundos
+                setInterval(() => {
+                    this.updateSystemInfo();
+                    this.updateUptime();
+                }, 5000);
+
+                // Monitorar erros globais
+                window.addEventListener('error', (event) => {
+                    this.log(`ERRO GLOBAL: ${event.message} em ${event.filename}:${event.lineno}`, 'error');
+                });
+
+                window.addEventListener('unhandledrejection', (event) => {
+                    this.log(`PROMISE REJECTED: ${event.reason}`, 'error');
+                });
+
+                // Monitorar mudanças de conectividade
+                window.addEventListener('online', () => {
+                    this.log('Conexão restaurada', 'info');
+                    document.getElementById('connection-status').textContent = 'ONLINE';
+                    document.getElementById('connection-status').className = 'status-item status-ok';
+                });
+
+                window.addEventListener('offline', () => {
+                    this.log('Conexão perdida', 'warning');
+                    document.getElementById('connection-status').textContent = 'OFFLINE';
+                    document.getElementById('connection-status').className = 'status-item status-error';
+                });
+            }
+
+            testComponents() {
+                this.log('Iniciando testes de componentes...', 'info');
+                
+                // Teste de imagens
+                this.testImages();
+                
+                // Teste de JavaScript
+                this.testJavaScript();
+                
+                // Teste de Service Worker
+                this.testServiceWorker();
+                
+                // Teste de PWA
+                this.testPWA();
+            }
+
+            testImages() {
+                const images = [
+                    'Imagem/empresa_estetica.png',
+                    'Imagem/academia.png',
+                    'Imagem/img1.png'
+                ];
+
+                images.forEach((src, index) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.imagesLoaded++;
+                        this.log(`✅ Imagem ${index + 1} carregada: ${src}`, 'info');
+                        this.updateImageStatus();
+                    };
+                    img.onerror = () => {
+                        this.log(`❌ Erro ao carregar imagem ${index + 1}: ${src}`, 'error');
+                        this.updateImageStatus();
+                    };
+                    img.src = src;
+                });
+            }
+
+            testJavaScript() {
+                try {
+                    // Teste básico
+                    const test = 1 + 1;
+                    if (test === 2) {
+                        this.log('✅ JavaScript funcionando corretamente', 'info');
+                        document.getElementById('test-js').innerHTML = '⚙️ JavaScript: <span class="status-item status-ok">OK</span>';
+                    } else {
+                        throw new Error('Teste matemático falhou');
+                    }
+                } catch (error) {
+                    this.log(`❌ Erro no JavaScript: ${error.message}`, 'error');
+                    document.getElementById('test-js').innerHTML = '⚙️ JavaScript: <span class="status-item status-error">ERRO</span>';
+                }
+            }
+
+            testServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            this.log('✅ Service Worker registrado com sucesso', 'info');
+                            document.getElementById('test-sw').innerHTML = '🔧 Service Worker: <span class="status-item status-ok">OK</span>';
+                        })
+                        .catch(error => {
+                            this.log(`❌ Erro no Service Worker: ${error.message}`, 'error');
+                            document.getElementById('test-sw').innerHTML = '🔧 Service Worker: <span class="status-item status-error">ERRO</span>';
+                        });
+                } else {
+                    this.log('⚠️ Service Worker não suportado neste navegador', 'warning');
+                    document.getElementById('test-sw').innerHTML = '🔧 Service Worker: <span class="status-item status-warning">NÃO SUPORTADO</span>';
+                }
+            }
+
+            testPWA() {
+                // Verificar se é PWA
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    this.log('✅ Executando como PWA', 'info');
+                    document.getElementById('test-pwa').innerHTML = '📱 PWA: <span class="status-item status-ok">ATIVO</span>';
+                } else {
+                    this.log('ℹ️ Executando no navegador (não é PWA)', 'info');
+                    document.getElementById('test-pwa').innerHTML = '📱 PWA: <span class="status-item status-warning">NAVEGADOR</span>';
+                }
+            }
+
+            updateImageStatus() {
+                const status = this.imagesLoaded === this.totalImages ? 'OK' : 'CARREGANDO';
+                const className = this.imagesLoaded === this.totalImages ? 'status-ok' : 'status-warning';
+                document.getElementById('test-images').innerHTML = `🖼️ Imagens: <span class="status-item ${className}">${this.imagesLoaded}/${this.totalImages}</span>`;
+            }
+
+            updateCounters() {
+                document.getElementById('images-loaded').textContent = this.imagesLoaded;
+                document.getElementById('errors-count').textContent = this.errors;
+                document.getElementById('warnings-count').textContent = this.warnings;
+                document.getElementById('error-count').textContent = `ERROS: ${this.errors}`;
+            }
+
+            updateUptime() {
+                const uptime = Math.floor((Date.now() - this.startTime) / 1000);
+                document.getElementById('uptime').textContent = `${uptime}s`;
+            }
+
+            interceptConsole() {
+                const originalLog = console.log;
+                const originalError = console.error;
+                const originalWarn = console.warn;
+
+                console.log = (...args) => {
+                    this.log(args.join(' '), 'info');
+                    originalLog.apply(console, args);
+                };
+
+                console.error = (...args) => {
+                    this.log(args.join(' '), 'error');
+                    this.errors++;
+                    originalError.apply(console, args);
+                };
+
+                console.warn = (...args) => {
+                    this.log(args.join(' '), 'warning');
+                    this.warnings++;
+                    originalWarn.apply(console, args);
+                };
+            }
+        }
+
+        // Funções globais
+        function clearLogs() {
+            document.getElementById('logs-panel').innerHTML = '';
+            monitor.logs = [];
+            monitor.log('Logs limpos', 'info');
+        }
+
+        function testSystem() {
+            monitor.log('Executando teste completo do sistema...', 'info');
+            monitor.testComponents();
+        }
+
+        function exportLogs() {
+            const logsText = monitor.logs.map(log => 
+                `[${log.timestamp}] ${log.type.toUpperCase()}: ${log.message}`
+            ).join('\n');
+            
+            const blob = new Blob([logsText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tvde-door-logs-${new Date().toISOString().slice(0, 19)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            monitor.log('Logs exportados', 'info');
+        }
+
+        function resetSystem() {
+            if (confirm('Tem certeza que deseja resetar o sistema?')) {
+                location.reload();
+            }
+        }
+
+        // Inicializar monitor
+        let monitor;
+        document.addEventListener('DOMContentLoaded', () => {
+            monitor = new SystemMonitor();
+            
+            // Atualizar status do sistema
+            document.getElementById('system-status').textContent = 'ATIVO';
+            document.getElementById('system-status').className = 'status-item status-ok';
+            
+            document.getElementById('connection-status').textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE';
+            document.getElementById('connection-status').className = navigator.onLine ? 'status-item status-ok' : 'status-item status-error';
+        });
+    </script>
+</body>
+</html>

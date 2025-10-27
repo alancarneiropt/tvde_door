@@ -253,9 +253,17 @@
             }
 
             init() {
+                console.log('🔧 DEBUG: Iniciando player...');
+                console.log('🔧 DEBUG: Imagens encontradas:', this.images.length);
+                
+                // Debug: verificar se as imagens existem
+                this.images.forEach((img, index) => {
+                    console.log(`🔧 DEBUG: Imagem ${index}:`, img.src, img.alt);
+                });
+                
                 this.bindEvents();
                 this.updateHUD();
-                console.log('Player inicializado com', this.images.length, 'imagens');
+                console.log('✅ Player inicializado com', this.images.length, 'imagens');
             }
 
             bindEvents() {
@@ -366,11 +374,14 @@
             }
 
             showCurrentImage() {
+                console.log('🔧 DEBUG: Mostrando imagem', this.currentIndex);
+                
                 // Esconder todas as imagens
                 this.images.forEach(img => img.classList.remove('active'));
                 
                 // Mostrar imagem atual
                 if (this.images[this.currentIndex]) {
+                    console.log('🔧 DEBUG: Ativando imagem:', this.images[this.currentIndex].src);
                     this.images[this.currentIndex].classList.add('active');
                     
                     // Avançar para próxima imagem após duração
@@ -378,6 +389,8 @@
                     this.currentTimeout = setTimeout(() => {
                         this.nextImage();
                     }, this.duration);
+                } else {
+                    console.error('❌ ERRO: Imagem não encontrada no índice', this.currentIndex);
                 }
             }
 
@@ -436,7 +449,16 @@
 
         // Inicializar quando a página carregar
         document.addEventListener('DOMContentLoaded', () => {
-            new SimpleAdsPlayer();
+            console.log('🔧 DEBUG: DOM carregado, iniciando player...');
+            console.log('🔧 DEBUG: URL atual:', window.location.href);
+            console.log('🔧 DEBUG: User Agent:', navigator.userAgent);
+            
+            try {
+                new SimpleAdsPlayer();
+                console.log('✅ Player criado com sucesso!');
+            } catch (error) {
+                console.error('❌ ERRO ao criar player:', error);
+            }
         });
     </script>
 </body>

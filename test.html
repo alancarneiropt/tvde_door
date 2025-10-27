@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Simples - TVDE Door</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .test-box {
+            background: #333;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+        }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+    </style>
+</head>
+<body>
+    <h1>🔧 TESTE DE DEBUG - TVDE DOOR</h1>
+    
+    <div class="test-box">
+        <h2>Status do Sistema</h2>
+        <p id="status">Testando...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Informações do Navegador</h2>
+        <p><strong>URL:</strong> <span id="url"></span></p>
+        <p><strong>User Agent:</strong> <span id="useragent"></span></p>
+        <p><strong>Linguagem:</strong> <span id="language"></span></p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Teste de Imagens</h2>
+        <p>Testando carregamento de imagens...</p>
+        <img src="Imagem/empresa_estetica.png" alt="Teste 1" style="width: 100px; height: 100px; object-fit: contain;" onload="imageLoaded(1)" onerror="imageError(1)">
+        <img src="Imagem/academia.png" alt="Teste 2" style="width: 100px; height: 100px; object-fit: contain;" onload="imageLoaded(2)" onerror="imageError(2)">
+        <img src="Imagem/img1.png" alt="Teste 3" style="width: 100px; height: 100px; object-fit: contain;" onload="imageLoaded(3)" onerror="imageError(3)">
+        <div id="image-status"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>Teste de JavaScript</h2>
+        <button onclick="testJavaScript()">Testar JavaScript</button>
+        <div id="js-status"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>Teste de Service Worker</h2>
+        <div id="sw-status">Verificando...</div>
+    </div>
+
+    <script>
+        console.log('🔧 DEBUG: Página de teste carregada');
+        
+        // Informações básicas
+        document.getElementById('url').textContent = window.location.href;
+        document.getElementById('useragent').textContent = navigator.userAgent;
+        document.getElementById('language').textContent = navigator.language;
+        
+        // Status inicial
+        document.getElementById('status').innerHTML = '<span class="success">✅ Sistema funcionando</span>';
+        
+        // Teste de imagens
+        let imagesLoaded = 0;
+        let imagesTotal = 3;
+        
+        function imageLoaded(num) {
+            imagesLoaded++;
+            console.log(`✅ Imagem ${num} carregada`);
+            updateImageStatus();
+        }
+        
+        function imageError(num) {
+            console.error(`❌ Erro ao carregar imagem ${num}`);
+            updateImageStatus();
+        }
+        
+        function updateImageStatus() {
+            const status = document.getElementById('image-status');
+            if (imagesLoaded === imagesTotal) {
+                status.innerHTML = '<span class="success">✅ Todas as imagens carregadas</span>';
+            } else {
+                status.innerHTML = `<span>Carregando... ${imagesLoaded}/${imagesTotal}</span>`;
+            }
+        }
+        
+        // Teste de JavaScript
+        function testJavaScript() {
+            const status = document.getElementById('js-status');
+            try {
+                // Teste básico
+                const test = 1 + 1;
+                if (test === 2) {
+                    status.innerHTML = '<span class="success">✅ JavaScript funcionando</span>';
+                    console.log('✅ JavaScript funcionando');
+                } else {
+                    throw new Error('Teste matemático falhou');
+                }
+            } catch (error) {
+                status.innerHTML = `<span class="error">❌ Erro: ${error.message}</span>`;
+                console.error('❌ Erro no JavaScript:', error);
+            }
+        }
+        
+        // Teste de Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('✅ Service Worker registrado:', registration);
+                    document.getElementById('sw-status').innerHTML = '<span class="success">✅ Service Worker ativo</span>';
+                })
+                .catch(error => {
+                    console.error('❌ Erro no Service Worker:', error);
+                    document.getElementById('sw-status').innerHTML = `<span class="error">❌ Erro: ${error.message}</span>`;
+                });
+        } else {
+            console.log('⚠️ Service Worker não suportado');
+            document.getElementById('sw-status').innerHTML = '<span class="error">❌ Service Worker não suportado</span>';
+        }
+        
+        // Teste automático após 3 segundos
+        setTimeout(() => {
+            testJavaScript();
+        }, 3000);
+    </script>
+</body>
+</html>
