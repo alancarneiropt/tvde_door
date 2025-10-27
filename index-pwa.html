@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixdados Solutions - Outdoor Digital</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ad-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: none;
+        }
+
+        .ad-image.active {
+            display: block;
+        }
+
+        /* Branding */
+        .branding {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00FFFF, #0080FF);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 20px;
+            color: #000;
+        }
+
+        .brand-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Controles */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        /* HUD */
+        .hud {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .status-pill {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .progress-pill {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        /* Overlay inicial */
+        .start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            cursor: pointer;
+        }
+
+        .start-overlay.hidden {
+            display: none;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #00FFFF, #0080FF);
+            color: #000;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .start-button:hover {
+            transform: scale(1.05);
+        }
+
+        .start-text {
+            margin-top: 20px;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        /* Aviso legal */
+        .legal-notice {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            opacity: 0.6;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Branding -->
+        <div class="branding">
+            <div class="logo">F</div>
+            <div class="brand-text">FIXDADOS SOLUTIONS</div>
+        </div>
+
+        <!-- Controles -->
+        <div class="controls">
+            <button class="control-btn" id="mute-btn" title="Mute/Unmute">🔊</button>
+            <button class="control-btn" id="fullscreen-btn" title="Fullscreen">⛶</button>
+            <button class="control-btn" id="play-pause-btn" title="Play/Pause">⏯</button>
+        </div>
+
+        <!-- Overlay inicial -->
+        <div class="start-overlay" id="start-overlay">
+            <button class="start-button">Toque para Iniciar</button>
+            <div class="start-text">Outdoor Digital - Propagandas em Loop</div>
+        </div>
+
+        <!-- Imagens das empresas -->
+        <img src="Imagem/empresa_estetica.png" alt="Clínica de Estética" class="ad-image active" data-company="Clínica de Estética">
+        <img src="Imagem/restaurante.png" alt="Restaurante Gourmet" class="ad-image" data-company="Restaurante Gourmet">
+        <img src="Imagem/academia.png" alt="Academia Fitness" class="ad-image" data-company="Academia Fitness">
+        <img src="Imagem/loja_eletronicos.png" alt="Loja de Eletrônicos" class="ad-image" data-company="Loja de Eletrônicos">
+        <img src="Imagem/supermercado.png" alt="Supermercado" class="ad-image" data-company="Supermercado">
+        <img src="Imagem/farmacia.png" alt="Farmácia" class="ad-image" data-company="Farmácia">
+        <img src="Imagem/auto_pecas.png" alt="Auto Peças" class="ad-image" data-company="Auto Peças">
+        <img src="Imagem/advocacia.png" alt="Escritório de Advocacia" class="ad-image" data-company="Escritório de Advocacia">
+        <img src="Imagem/contabilidade.png" alt="Contabilidade" class="ad-image" data-company="Contabilidade">
+        <img src="Imagem/seguros.png" alt="Seguros" class="ad-image" data-company="Seguros">
+        <img src="Imagem/imobiliaria.png" alt="Imobiliária" class="ad-image" data-company="Imobiliária">
+
+        <!-- HUD -->
+        <div class="hud">
+            <div class="status-pill" id="status-pill">Carregando...</div>
+            <div class="progress-pill" id="progress-pill">1/1</div>
+        </div>
+
+        <!-- Aviso legal -->
+        <div class="legal-notice">Use apenas com o veículo estacionado.</div>
+    </div>
+
+    <script>
+        class SimpleAdsPlayer {
+            constructor() {
+                this.images = document.querySelectorAll('.ad-image');
+                this.currentIndex = 0;
+                this.isPlaying = false;
+                this.isMuted = true;
+                this.isFullscreen = false;
+                this.currentTimeout = null;
+                this.duration = 5000; // 5 segundos por imagem
+
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateHUD();
+                console.log('Player inicializado com', this.images.length, 'imagens');
+            }
+
+            bindEvents() {
+                // Overlay inicial
+                document.getElementById('start-overlay').addEventListener('click', () => {
+                    this.startPresentation();
+                });
+
+                // Controles
+                document.getElementById('mute-btn').addEventListener('click', () => this.toggleMute());
+                document.getElementById('fullscreen-btn').addEventListener('click', () => this.toggleFullscreen());
+                document.getElementById('play-pause-btn').addEventListener('click', () => this.togglePlayPause());
+
+                // Eventos de tela
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.controls') && !e.target.closest('#start-overlay')) {
+                        this.togglePlayPause();
+                    }
+                });
+
+                document.addEventListener('dblclick', (e) => {
+                    if (!e.target.closest('.controls') && !e.target.closest('#start-overlay')) {
+                        this.toggleFullscreen();
+                    }
+                });
+
+                // Atalhos de teclado
+                document.addEventListener('keydown', (e) => {
+                    switch (e.key.toLowerCase()) {
+                        case 'm':
+                            this.toggleMute();
+                            break;
+                        case 'f':
+                            this.toggleFullscreen();
+                            break;
+                        case ' ':
+                            e.preventDefault();
+                            this.togglePlayPause();
+                            break;
+                    }
+                });
+            }
+
+            startPresentation() {
+                document.getElementById('start-overlay').classList.add('hidden');
+                
+                // Tentar fullscreen
+                this.tryFullscreen();
+                
+                // Ativar Wake Lock
+                this.activateWakeLock();
+                
+                // Tentar lock de orientação
+                this.lockOrientation();
+                
+                // Iniciar loop
+                this.play();
+            }
+
+            tryFullscreen() {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(e => {
+                        console.log('Fullscreen não suportado:', e);
+                    });
+                }
+            }
+
+            activateWakeLock() {
+                if ('wakeLock' in navigator) {
+                    navigator.wakeLock.request('screen').then(wakeLock => {
+                        this.wakeLock = wakeLock;
+                        console.log('Wake Lock ativado');
+                    }).catch(e => {
+                        console.log('Wake Lock não suportado:', e);
+                    });
+                }
+            }
+
+            lockOrientation() {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(e => {
+                        console.log('Lock de orientação não suportado:', e);
+                    });
+                }
+            }
+
+            play() {
+                if (this.isPlaying) return;
+                this.isPlaying = true;
+                this.showCurrentImage();
+                this.updatePlayPauseButton();
+                this.updateHUD();
+            }
+
+            pause() {
+                this.isPlaying = false;
+                this.clearCurrentTimeout();
+                this.updatePlayPauseButton();
+                this.updateHUD();
+            }
+
+            togglePlayPause() {
+                if (this.isPlaying) {
+                    this.pause();
+                } else {
+                    this.play();
+                }
+            }
+
+            showCurrentImage() {
+                // Esconder todas as imagens
+                this.images.forEach(img => img.classList.remove('active'));
+                
+                // Mostrar imagem atual
+                if (this.images[this.currentIndex]) {
+                    this.images[this.currentIndex].classList.add('active');
+                    
+                    // Avançar para próxima imagem após duração
+                    this.clearCurrentTimeout();
+                    this.currentTimeout = setTimeout(() => {
+                        this.nextImage();
+                    }, this.duration);
+                }
+            }
+
+            nextImage() {
+                this.currentIndex = (this.currentIndex + 1) % this.images.length;
+                this.showCurrentImage();
+                this.updateHUD();
+            }
+
+            clearCurrentTimeout() {
+                if (this.currentTimeout) {
+                    clearTimeout(this.currentTimeout);
+                    this.currentTimeout = null;
+                }
+            }
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                const muteBtn = document.getElementById('mute-btn');
+                muteBtn.textContent = this.isMuted ? '🔇' : '🔊';
+            }
+
+            toggleFullscreen() {
+                if (!this.isFullscreen) {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                        this.isFullscreen = true;
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                        this.isFullscreen = false;
+                    }
+                }
+            }
+
+            updatePlayPauseButton() {
+                const playPauseBtn = document.getElementById('play-pause-btn');
+                playPauseBtn.textContent = this.isPlaying ? '⏸' : '▶';
+            }
+
+            updateHUD() {
+                const statusPill = document.getElementById('status-pill');
+                const progressPill = document.getElementById('progress-pill');
+                
+                if (this.images.length > 0 && this.images[this.currentIndex]) {
+                    const company = this.images[this.currentIndex].dataset.company || 'Empresa';
+                    statusPill.textContent = this.isPlaying ? `Reproduzindo: ${company}` : `Pausado: ${company}`;
+                } else {
+                    statusPill.textContent = this.isPlaying ? 'Reproduzindo' : 'Pausado';
+                }
+                
+                progressPill.textContent = `${this.currentIndex + 1}/${this.images.length}`;
+            }
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            new SimpleAdsPlayer();
+        });
+
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('SW registrado com sucesso:', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('Falha no registro do SW:', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

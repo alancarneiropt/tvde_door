@@ -1,0 +1,38 @@
+[
+  {
+    "type": "html",
+    "content": "fixdados-solutions",
+    "duration": 8000,
+    "alt": "Fixdados Solutions - Tecnologia e Inovação"
+  },
+  {
+    "type": "html", 
+    "content": "iptv-premium",
+    "duration": 7000,
+    "alt": "IPTV Premium - Todos os Canais por €9,90"
+  },
+  {
+    "type": "html",
+    "content": "restaurante-gourmet",
+    "duration": 6000,
+    "alt": "Restaurante Gourmet - Sabores Únicos"
+  },
+  {
+    "type": "html",
+    "content": "academia-fitness",
+    "duration": 6500,
+    "alt": "Academia Fitness Pro - Transforme seu Corpo"
+  },
+  {
+    "type": "html",
+    "content": "clinica-estetica",
+    "duration": 7000,
+    "alt": "Clínica de Estética - Beleza Natural"
+  },
+  {
+    "type": "html",
+    "content": "loja-eletronicos",
+    "duration": 6000,
+    "alt": "TechStore - Eletrônicos e Gadgets"
+  }
+]
