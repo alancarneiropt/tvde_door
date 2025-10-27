@@ -1,8 +1,8 @@
 {
-  "name": "Fixdados Solutions",
-  "short_name": "Fixdados Solutions",
+  "name": "TVDE Door - Fixdados Solutions",
+  "short_name": "TVDE Door",
   "description": "Sistema de anúncios em loop para multimídia automotiva",
-  "start_url": "/",
+  "start_url": "https://tvdedoor.fixdados.store/",
   "display": "fullscreen",
   "orientation": "landscape",
   "theme_color": "#000000",
@@ -21,6 +21,6 @@
   ],
   "categories": ["automotive", "multimedia", "advertising"],
   "lang": "pt-BR",
-  "scope": "/",
+  "scope": "https://tvdedoor.fixdados.store/",
   "prefer_related_applications": false
 }

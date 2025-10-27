@@ -1,14 +1,13 @@
-const CACHE_NAME = 'fixdados-ads-v1';
+const CACHE_NAME = 'tvde-door-v1';
 const STATIC_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
   '/ads.json',
-  // URLs de mídia de exemplo (serão substituídas por URLs reais)
-  'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=1080&fit=crop',
-  'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&h=1080&fit=crop',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+  '/favicon.ico',
+  '/Imagem/empresa_estetica.png',
+  '/Imagem/academia.png',
+  '/Imagem/img1.png'
 ];
 
 // Install event - cache static resources
