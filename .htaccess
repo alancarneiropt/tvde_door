@@ -1,5 +1,7 @@
 # Configurações para TVDE Door - Fixdados Solutions
-# Deploy para Easy Panel + DuckDNS
+# Deploy para Easy Panel + DuckDNS + Docker
+# Nota: Este arquivo é para compatibilidade com Apache
+# O nginx.conf já contém todas as configurações necessárias
 
 # Habilitar compressão
 <IfModule mod_deflate.c>

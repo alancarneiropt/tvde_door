@@ -1,0 +1,11 @@
+# Arquivos e pastas a serem ignorados no build Docker
+node_modules/
+.git/
+.gitignore
+README.md
+DEPLOY_INSTRUCTIONS.md
+DEPLOY_CHECKLIST.md
+tvde_door/
+*.log
+.DS_Store
+Thumbs.db
