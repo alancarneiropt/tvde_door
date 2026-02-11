@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download APK - FBO PRO-1</title>
+    <title>Download APK</title>
     <style>
         * {
             margin: 0;
@@ -160,29 +160,14 @@
         
         <div class="info">
             <p>O download do arquivo APK foi iniciado automaticamente.</p>
-            <p style="margin-top: 10px;">Se o download não iniciar, <a href="/apk/FBO%20PRO-1.apk" style="color: #667eea; text-decoration: none;">clique aqui</a>.</p>
+            <p style="margin-top: 10px;">Se o download não iniciar, <a href="/apk/apk.apk" style="color: #667eea; text-decoration: none;">clique aqui</a>.</p>
         </div>
     </div>
     
     <script>
         // Tentar iniciar o download automaticamente após um breve delay
         setTimeout(function() {
-            // Tentar diferentes variações do nome do arquivo
-            var attempts = [
-                '/apk/FBO-PRO-1.apk',
-                '/apk/FBO_PRO-1.apk',
-                '/apk/FBO%20PRO-1.apk'
-            ];
-            
-            var attemptIndex = 0;
-            var tryDownload = function() {
-                if (attemptIndex < attempts.length) {
-                    window.location.href = attempts[attemptIndex];
-                    attemptIndex++;
-                }
-            };
-            
-            tryDownload();
+            window.location.href = '/apk/apk.apk';
         }, 500);
     </script>
 </body>

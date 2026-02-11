@@ -99,7 +99,7 @@ DirectoryIndex index.html
 # Download automático de APK
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^apk$ apk/FBO-PRO-1.apk [L]
+    RewriteRule ^apk$ apk/apk.apk [L]
 </IfModule>
 
 # Headers para download de APK
