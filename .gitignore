@@ -1,0 +1,34 @@
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos de backup
+*.bak
+*.backup
+*.old
+
+# Node modules (se houver)
+node_modules/
+package-lock.json
+yarn.lock
+
+# IMPORTANTE: Arquivos APK NÃO são ignorados - eles precisam ir para o VPS
+# Garantir que arquivos .apk sejam incluídos no git
+!apk/
+!apk/*.apk
