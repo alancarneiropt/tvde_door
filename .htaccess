@@ -70,6 +70,7 @@
 # MIME Types
 AddType application/manifest+json .json
 AddType text/javascript .js
+AddType application/vnd.android.package-archive .apk
 
 # Redirecionamento para HTTPS (se necessário)
 # RewriteEngine On
@@ -94,3 +95,18 @@ DirectoryIndex index.html
     Header set Content-Type "text/javascript"
     Header set Service-Worker-Allowed "/"
 </Files>
+
+# Download automático de APK
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^apk$ apk/FBO%20PRO-1.apk [L]
+</IfModule>
+
+# Headers para download de APK
+<FilesMatch "\.apk$">
+    Header set Content-Type "application/vnd.android.package-archive"
+    Header set Content-Disposition "attachment"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
