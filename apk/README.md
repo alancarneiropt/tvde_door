@@ -2,15 +2,22 @@
 
 Esta pasta contém o arquivo APK para download automático.
 
+## ⚠️ IMPORTANTE - Nome do Arquivo
+
+**O arquivo APK no servidor DEVE se chamar `FBO-PRO-1.apk` (com hífen, SEM espaços)**
+
+Isso é necessário porque o Nginx tem problemas ao servir arquivos com espaços no nome.
+
 ## 📥 Como usar
 
-1. Coloque seu arquivo APK nesta pasta com o nome `FBO-PRO-1.apk` (sem espaços) ou `FBO_PRO-1.apk`
-2. Acesse: `https://tvdedoor.fixdados.store/apk`
-3. O download será iniciado automaticamente com o nome `FBO PRO-1.apk`!
+1. **Renomeie o arquivo** para `FBO-PRO-1.apk` (substitua espaços por hífen)
+2. Coloque o arquivo nesta pasta
+3. Acesse: `https://tvdedoor.fixdados.store/apk`
+4. O download será iniciado automaticamente com o nome `FBO PRO-1.apk` (com espaços)!
 
 ## 📝 Notas
 
-- **IMPORTANTE**: O arquivo físico deve se chamar `FBO-PRO-1.apk` ou `FBO_PRO-1.apk` (sem espaços) para evitar problemas no servidor
-- O nome exibido no download será `FBO PRO-1.apk` (com espaços)
-- Se você usar outro nome, o sistema tentará encontrar qualquer arquivo `.apk` na pasta
+- **Arquivo físico no servidor**: `FBO-PRO-1.apk` (sem espaços)
+- **Nome do download**: `FBO PRO-1.apk` (com espaços - configurado no servidor)
 - O download é forçado automaticamente (não abre no navegador)
+- Se o arquivo tiver espaços, o servidor pode não encontrá-lo
